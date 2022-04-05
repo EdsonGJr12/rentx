@@ -1,39 +1,52 @@
-import React from 'react';
-import { StatusBar } from 'react-native';
-import { RFValue } from 'react-native-responsive-fontsize';
+import React from "react";
+import { StatusBar } from "react-native";
 
-import Logo from '../../assets/logo.svg';
+import { useNavigation } from "@react-navigation/native";
+import { RFValue } from "react-native-responsive-fontsize";
 
-import Car from '../../components/Car';
+import Logo from "../../assets/logo.svg";
 
-import { 
-    Container, 
-    Header,
-    TotalCars
-} from './styles';
+import { Car } from "../../components/Car";
 
-const Home: React.FC = () => {
+import { CardList, Container, Header, TotalCars } from "./styles";
 
-    return (
-        <Container>
-            <StatusBar 
-                barStyle='light-content' 
-                backgroundColor='transparent' 
-                translucent
-            />
-            <Header>
-                <Logo 
-                    width={RFValue(108)}
-                    height={RFValue(12)}
-                />
-                <TotalCars>
-                    Total de 12 carros
-                </TotalCars>
-            </Header>
+export function Home() {
+  const navigation = useNavigation<any>();
 
-            <Car />
-        </Container>
-    )
+  const carDataOne = {
+    brand: "Audi",
+    name: "RS 5 Coupé",
+    rent: {
+      period: "Ao dia",
+      price: 120,
+    },
+    thumbnail: "https://freepngimg.com/thumb/audi/35227-5-audi-rs5-red.png",
+  };
+
+  function handleCarDetails() {
+    navigation.navigate("CarDetails");
+  }
+
+  return (
+    <Container>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent //começa tamanho do header do começo da tela
+      />
+
+      <Header>
+        <Logo width={RFValue(108)} height={RFValue(12)} />
+        <TotalCars>Total de 12 carros</TotalCars>
+      </Header>
+
+      <CardList
+        data={[1, 2, 3, 4, 5, 6, 7]}
+        keyExtractor={(item) => String(item)}
+        renderItem={({ item }) => (
+          <Car data={carDataOne} onPress={handleCarDetails} />
+        )}
+      />
+    </Container>
+  );
 }
-
-export default Home;
