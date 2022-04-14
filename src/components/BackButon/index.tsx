@@ -7,11 +7,11 @@ import { BorderlessButtonProps } from "react-native-gesture-handler";
 interface BackButtonProps extends BorderlessButtonProps {
   color?: string;
 }
-export function BackButton({ color }: BackButtonProps) {
+export function BackButton({ color, ...rest }: BackButtonProps) {
   const theme = useTheme();
 
   return (
-    <Container>
+    <Container {...rest}>
       <MaterialIcons
         name="chevron-left"
         size={24}

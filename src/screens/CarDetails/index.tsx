@@ -1,16 +1,9 @@
 import React from "react";
 
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Acessory } from "../../components/Acessory";
 import { BackButton } from "../../components/BackButon";
 import { ImageSlider } from "../../components/ImageSlider";
-
-import SpeedSvg from "../../assets/speed.svg";
-import ForceSvg from "../../assets/force.svg";
-import AccelerationSvg from "../../assets/acceleration.svg";
-import GasolineSvg from "../../assets/gasoline.svg";
-import ExchangeSvg from "../../assets/exchange.svg";
-import PeopleSvg from "../../assets/people.svg";
 
 import {
   Container,
@@ -25,61 +18,79 @@ import {
   Period,
   Price,
   About,
-  Acessories,
+  Accessories,
   Footer,
 } from "./styles";
 import { Button } from "../../components/Button";
+import { getAccessoryIcon } from "../../utils/getAccessoryIcon";
 
+interface CarAccessoriesProps {
+  type: string;
+  name: string;
+}
+
+interface RouteParams {
+  id: string;
+  brand: string;
+  name: string;
+  rent: {
+    period: string;
+    price: number;
+  };
+  accessories: CarAccessoriesProps[];
+  about: string;
+  photos: string[];
+}
 export function CarDetails() {
   const navigation = useNavigation<any>();
+  const route = useRoute();
+
+  const { brand, name, rent, accessories, about, photos } =
+    route.params as RouteParams;
 
   function handleConfirm() {
     navigation.navigate("Scheduling");
   }
 
+  function handleBack() {
+    console.log("aqui");
+    navigation.goBack();
+  }
+
   return (
     <Container>
       <Header>
-        <BackButton />
+        <BackButton onPress={handleBack} />
       </Header>
 
       <CarImages>
-        <ImageSlider
-          imagesUrl={[
-            "https://freepngimg.com/thumb/audi/35227-5-audi-rs5-red.png",
-          ]}
-        />
+        <ImageSlider imagesUrl={photos} />
       </CarImages>
 
       <Content>
         <Details>
           <Description>
-            <Brand>Lanborghini</Brand>
-            <Name>Huracan</Name>
+            <Brand>{brand}</Brand>
+            <Name>{name}</Name>
           </Description>
 
           <Rent>
             <Period>Ao dia</Period>
-            <Price>R$ 580</Price>
+            <Price>R$ {rent.price}</Price>
           </Rent>
         </Details>
 
-        <Acessories>
-          <Acessory name="380 Km/h" icon={SpeedSvg} />
-          <Acessory name="3.2s" icon={AccelerationSvg} />
-          <Acessory name="800 HP" icon={ForceSvg} />
-          <Acessory name="Gasolina" icon={GasolineSvg} />
-          <Acessory name="Auto" icon={ExchangeSvg} />
-          <Acessory name="2 pessoas" icon={PeopleSvg} />
-        </Acessories>
+        <Accessories>
+          {accessories.map((accessorie) => (
+            <Acessory
+              key={accessorie.type}
+              name={accessorie.name}
+              icon={getAccessoryIcon(accessorie.type)}
+            />
+          ))}
+        </Accessories>
 
-        <About>
-          Esse é um automível depotivo. Surgiu do lendário touro de lide... Esse
-          é um automível depotivo. Surgiu do lendário touro de lide... Esse é um
-          automível depotivo. Surgiu do lendário touro de lide... Esse é um
-          automível depotivo. Surgiu do lendário touro de lide... Esse é um
-          automível depotivo. Surgiu do lendário touro de lide...
-        </About>
+        <About>{about}</About>
       </Content>
 
       <Footer>
