@@ -31,7 +31,7 @@ export const CarImageWrapper = styled.View`
     height: 132px;
 
     justify-content: center;
-    align-items: center;
+    align-items: center; 
 `;
 
 export const CarImage = styled.Image`

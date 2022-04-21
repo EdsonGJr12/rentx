@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StatusBar } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 import { useNavigation } from "@react-navigation/native";
 import { RFValue } from "react-native-responsive-fontsize";
@@ -8,30 +9,26 @@ import Logo from "../../assets/logo.svg";
 
 import { Car } from "../../components/Car";
 
-import { CardList, Container, Header, TotalCars } from "./styles";
+import { CardList, Container, Header, MyCarsButton, TotalCars } from "./styles";
 import { api } from "../../service/api";
-import { isLoading } from "expo-font";
 import { Load } from "../../components/Load";
+import { CarProps } from "../@types/CarProps";
+import { useTheme } from "styled-components";
 
-export interface CarProps {
-  id: string;
-  brand: string;
-  name: string;
-  rent: {
-    period: string;
-    price: number;
-  };
-  thumbnail: string;
-  fuel_type: string;
-}
 export function Home() {
   const navigation = useNavigation<any>();
 
   const [cars, setCars] = useState<CarProps[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const theme = useTheme();
+
   function handleCarDetails(item: CarProps) {
     navigation.navigate("CarDetails", item);
+  }
+
+  function handleOpenMyCars() {
+    navigation.navigate("MyCars");
   }
 
   useEffect(() => {
@@ -58,7 +55,7 @@ export function Home() {
 
       <Header>
         <Logo width={RFValue(108)} height={RFValue(12)} />
-        <TotalCars>Total de 12 carros</TotalCars>
+        <TotalCars>Total de {cars.length} carros</TotalCars>
       </Header>
       {loading ? (
         <Load />
@@ -71,6 +68,9 @@ export function Home() {
           )}
         />
       )}
+      <MyCarsButton onPress={handleOpenMyCars}>
+        <Ionicons size={32} name="ios-car-sport" color={theme.colors.shape} />
+      </MyCarsButton>
     </Container>
   );
 }

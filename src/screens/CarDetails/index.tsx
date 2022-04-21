@@ -1,5 +1,13 @@
 import React from "react";
 
+import Animated, {
+  useSharedValue,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  interpolate,
+  Extrapolate,
+} from "react-native-reanimated";
+
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Acessory } from "../../components/Acessory";
 import { BackButton } from "../../components/BackButon";
@@ -9,7 +17,6 @@ import {
   Container,
   Header,
   CarImages,
-  Content,
   Details,
   Description,
   Brand,
@@ -23,51 +30,70 @@ import {
 } from "./styles";
 import { Button } from "../../components/Button";
 import { getAccessoryIcon } from "../../utils/getAccessoryIcon";
+import { CarProps } from "../@types/CarProps";
+import { StatusBar } from "react-native";
 
-interface CarAccessoriesProps {
-  type: string;
-  name: string;
-}
-
-interface RouteParams {
-  id: string;
-  brand: string;
-  name: string;
-  rent: {
-    period: string;
-    price: number;
-  };
-  accessories: CarAccessoriesProps[];
-  about: string;
-  photos: string[];
-}
 export function CarDetails() {
   const navigation = useNavigation<any>();
   const route = useRoute();
 
-  const { brand, name, rent, accessories, about, photos } =
-    route.params as RouteParams;
+  const scrollY = useSharedValue(0);
+  const scrollHandler = useAnimatedScrollHandler((event) => {
+    scrollY.value = event.contentOffset.y;
+    console.log(event.contentOffset.y);
+  });
+
+  const headerStyleAnimation = useAnimatedStyle(() => {
+    return {
+      height: interpolate(
+        scrollY.value,
+        [0, 200],
+        [200, 70],
+        Extrapolate.CLAMP
+      ),
+    };
+  });
+
+  const sliderCarsStyleAnimation = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(scrollY.value, [0, 150], [1, 0], Extrapolate.CLAMP),
+    };
+  });
+
+  const car = route.params as CarProps;
+  const { brand, name, rent, accessories, about, photos } = car;
 
   function handleConfirm() {
-    navigation.navigate("Scheduling");
+    navigation.navigate("Scheduling", car);
   }
 
   function handleBack() {
-    console.log("aqui");
     navigation.goBack();
   }
 
   return (
     <Container>
-      <Header>
-        <BackButton onPress={handleBack} />
-      </Header>
+      <StatusBar
+        barStyle="dark-content"
+        translucent
+        backgroundColor="transparent"
+      />
 
-      <CarImages>
-        <ImageSlider imagesUrl={photos} />
-      </CarImages>
+      <Animated.View style={[headerStyleAnimation]}>
+        <Header>
+          <BackButton onPress={handleBack} />
+        </Header>
 
-      <Content>
+        <Animated.View style={[sliderCarsStyleAnimation]}>
+          <ImageSlider imagesUrl={photos} />
+        </Animated.View>
+      </Animated.View>
+
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
+      >
         <Details>
           <Description>
             <Brand>{brand}</Brand>
@@ -90,8 +116,15 @@ export function CarDetails() {
           ))}
         </Accessories>
 
-        <About>{about}</About>
-      </Content>
+        <About>
+          {about}
+          {about}
+          {about}
+          {about}
+          {about}
+          {about}
+        </About>
+      </Animated.ScrollView>
 
       <Footer>
         <Button title="Escolher período do aluguel" onPress={handleConfirm} />
