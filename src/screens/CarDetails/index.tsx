@@ -31,7 +31,7 @@ import {
 import { Button } from "../../components/Button";
 import { getAccessoryIcon } from "../../utils/getAccessoryIcon";
 import { CarProps } from "../@types/CarProps";
-import { StatusBar } from "react-native";
+import { StatusBar, StyleSheet } from "react-native";
 
 export function CarDetails() {
   const navigation = useNavigation<any>();
@@ -132,3 +132,9 @@ export function CarDetails() {
     </Container>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    position: "absolute",
+  },
+});

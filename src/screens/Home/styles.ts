@@ -1,5 +1,6 @@
 import { FlatList } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
 import { RFValue } from 'react-native-responsive-fontsize';
 import styled from 'styled-components/native'; 
 import { CarProps } from '../@types/CarProps';
@@ -47,9 +48,11 @@ export const MyCarsButton = styled(RectButton)`
 
     justify-content: center;
     align-items: center;
+`;
 
+export const ButtonStyleContainer = styled(Animated.View)`
     position: absolute;
-    bottom: 13px;
-    right: 22px;
+    bottom: ${RFValue(13)}px;
+    right: ${RFValue(22)}px;
 `;
 
